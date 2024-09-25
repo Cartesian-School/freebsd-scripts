@@ -51,7 +51,8 @@ print("")
 os.system('clear')
 
 # 1. Automatic Sudo Rights Configuration for the %wheel Group
-
+print("1. Automatic Sudo Rights Configuration for the %wheel Group")
+print("")
 # Path to the sudoers file
 sudoers_file = '/usr/local/etc/sudoers'
 backup_file = '/usr/local/etc/sudoers.bak'
@@ -90,7 +91,8 @@ print("Sudo rights for the %wheel group have been updated.")
 os.system('clear')
 
 # 2. Git installation
-print("Git installation")
+print("2. Git installation")
+print("")
 # Ask the user if they want to install Git and only accept 'y' or 'n'
 while True:
     install_git = input("Do you want to install Git? (y/n): ").strip().lower()
@@ -182,10 +184,10 @@ primt("")
 
 
 # 3. Installation of OpenJDK
+print("3. Installation of OpenJDK")
 print("")
 
 # 3.1. Ask the user if they want to install OpenJDK
-
 while True:
     install_jdk = input("Do you want to install OpenJDK? (y/n): ").strip().lower()
     if install_jdk in ['y', 'n']:
@@ -288,9 +290,10 @@ primt("")
 
 
 # 4. Sound driver installation and configuration
+print("4. Sound driver installation and configuration")
+print("")
 
 # 4.1. Sound driver installation
-
 # Ask the user if they want to configure the sound device
 while True:
     configure_sound = input("Do you want to configure the sound device? (y/n): ").strip().lower()
@@ -382,7 +385,8 @@ primt("")
 
 
 # 5. Install the webcam drivers and utilities
-
+print("Install the webcam drivers and utilities")
+print("")
 # 5.1. Ask the user if they want to install the webcam drivers and utilities
 
 while True:
