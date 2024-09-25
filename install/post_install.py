@@ -649,7 +649,7 @@ os.system('clear')
 primt("")
 
 
-# 14. Install automount for automatic mounting
+# 10. Install automount for automatic mounting
 print("Install automount for automatoc maunting")
 while True:
     install_automount = input("Do you want to install automount for automatic mounting? (y/n): ").strip().lower()
@@ -660,7 +660,6 @@ while True:
 if install_automount == 'y':    
     print("\nInstalling automount for automatic mounting...")
     print("--------------------------------------------------------")
-
     subprocess.run(["pkg", "install", "-y", "automount"], check=True)
     subprocess.run(["sysrc", 'automount_enable="YES"'], check=True)
     subprocess.run(["service", "automount", "start"], check=True)
