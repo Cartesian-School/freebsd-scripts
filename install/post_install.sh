@@ -1,0 +1,47 @@
+#!/bin/sh
+clear
+echo "-----------------------"
+echo "   Cartesian School    "
+echo "-----------------------"
+echo "*  FreeBSD  ***********"
+echo "************  14.1  ***"
+echo "***********************"
+echo "***********************"
+clear
+
+
+##  Cartesian FreeBSD Automatic Installation Scenario
+
+echo " Cartesian FreeBSD installation script"
+echo "======================================================================="
+echo ""
+echo ""
+echo "  CCCCC    AAAAA   RRRRR  TTTTTTT  EEEEE  SSSSS  IIIII   AAAAA   N     N"
+echo " C     C  A     A  R    R    T     E      S        I    A     A  NN    N"
+echo " C        A AAA A  RRRRR     T     EEEEE  SSSSS    I    A AAA A  N N   N"
+echo " C        A     A  R    R    T     E          S    I    A     A  N  N  N"
+echo " C     C  A     A  R     R   T     E          S    I    A     A  N   N N"
+echo "  CCCCC   A     A  R     R   T     EEEEE  SSSSS  IIIII  A     A  N     N"
+echo ""
+echo ""
+echo "             ,        ,"
+echo "            /(        )\`"
+echo "            \ \___   / |"
+echo "            /- _  \`-/  '"
+echo "           (/\\/ \ \   /\\"
+echo "           / /   | \`    \\"
+echo "           O O   ) /    |"
+echo "           \`-^--'\`<     '"
+echo "          (_.)  _  )   /"
+echo "           \`.___/   /"
+echo "             \`-----' /"
+echo "        <----.     __\ "
+echo "        <----|====O)))==)"
+echo "        <----'    \`--'"
+echo "             \`-----'"
+echo "     "
+echo "     Powered on FreeBSD v.14.1 "
+echo ""
+echo "=========================================================================="
+echo ""
+clear
