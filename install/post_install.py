@@ -463,6 +463,7 @@ print("Proceeding to the next section of the installation...")
 os.system('clear')
 primt("")
 
+
 # 6. Install XOrg
 print("6. Install XOrg")
 print("")
@@ -488,6 +489,7 @@ print("Proceeding to the next section of the installation...")
 
 os.system('clear')
 primt("")
+
 
 # 7. Install the Nvidia 340 driver
 print("7. Install the Nvidia 340 driver")
@@ -569,3 +571,28 @@ print("Proceeding to the next section of the installation...")
 
 os.system('clear')
 primt("")
+
+
+# 8. Install XFCE 4
+print("Install XFCE 4")
+print("")
+while True:
+    install_xfce = input("Do you want to install Xfce and Xfce4-goodies? (y/n): ").strip().lower()
+    if install_xfce in ['y', 'n']:
+        break
+    print("Please enter 'y' for yes or 'n' for no.")
+
+if install_xfce == 'y':
+    print("Installing Xfce...")
+    subprocess.run(["pkg", "install", "-y", "xfce"], check=True)
+    print("Installing Xfce4-goodies...")
+    subprocess.run(["pkg", "install", "-y", "xfce4-goodies"], check=True)
+    print("")
+    print("Xfce and Xfce4-goodies installed successfully.")
+else:
+    print("Xfce installation skipped.")
+print("Proceeding to the next section of the installation...")
+
+os.system('clear')
+primt("")
+
