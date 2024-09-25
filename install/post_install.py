@@ -464,9 +464,9 @@ os.system('clear')
 primt("")
 
 # 6. Install XOrg
-print("Install XOrg")
+print("6. Install XOrg")
 print("")
-# 10.1. Ask the user if they want to install XOrg
+# 6.1. Ask the user if they want to install XOrg
 while True:
     install_xorg = input("Do you want to install XOrg? (y/n): ").strip().lower()
     if install_xorg in ['y', 'n']:
@@ -477,7 +477,7 @@ if install_xorg == 'y':
     print("Installing XOrg...")
     subprocess.run(["pkg", "install", "-y", "xorg"], check=True)
 
-    # 10.2 Adding the root user to the video group
+    # 6.2 Adding the root user to the video group
     print("Adding root to the video group...")
     print("")
     subprocess.run(["pw", "groupmod", "video", "-m", "root"], check=True)   
