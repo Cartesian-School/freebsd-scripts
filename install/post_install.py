@@ -596,3 +596,57 @@ print("Proceeding to the next section of the installation...")
 os.system('clear')
 primt("")
 
+
+# 9. install file system support (NTFS, exFAT, FAT32, EXT4, HFS+, FUSE)
+print("Installing support for file systems (NTFS, exFAT, FAT32, EXT4, HFS+, FUSE)...")
+print("")
+while True:
+    install_filesystem_support = input("Do you want to install file system support (NTFS, exFAT, FAT32, EXT4, HFS+, FUSE)? (y/n): ").strip().lower()
+    if install_filesystem_support in ['y', 'n']:
+        break
+    print("Please enter 'y' for yes or 'n' for no.")
+
+if install_filesystem_support == 'y':
+    packages = [
+        "fusefs-libs", "fusefs-ext2", "fusefs-ntfs", "fusefs-exfat", "e2fsprogs", "fusefs-afuse", 
+        "fusefs-bindfs", "fusefs-chironfs", "fusefs-cryptofs", "fusefs-curlftpfs", "fusefs-encfs", 
+        "fusefs-afuse", "fusefs-funionfs", "fusefs-fusepak", "fusefs-gitfs", "fusefs-gphotofs", 
+        "fusefs-hfsfuse", "fusefs-httpdirfs", "fusefs-httpfs", "fusefs-ifuse", "fusefs-jmtpfs", 
+        "fusefs-libs", "fusefs-libs3", "fusefs-lkl", "fusefs-mhddfs", "fusefs-mp3fs", "fusefs-nbt", 
+        "fusefs-ntfs-compression", "fusefs-pod", "fusefs-rar2fs", "fusefs-s3backer", "fusefs-s3fs", 
+        "fusefs-sandboxfs", "fusefs-securefs", "fusefs-simple-mtpfs", "fusefs-smbnetfs", "fusefs-sqlfs", 
+        "fusefs-squashfuse", "fusefs-sshfs", "fusefs-ufs", "fusefs-unionfs", "fusefs-unreliablefs", 
+        "fusefs-webdavfs", "fusefs-xfuse"
+    ]
+
+    subprocess.run(["pkg", "install", "-y"] + packages, check=True)
+    subprocess.run(["sysrc", 'fusefs_enable="YES"'], check=True)
+    subprocess.run(["kldload", "fusefs"], check=True)
+
+    loader_conf = "/boot/loader.conf"
+    fusefs_line = 'fusefs_load="YES"'
+
+    if os.path.exists(loader_conf):
+        with open(loader_conf, 'r') as file:
+            content = file.read()
+        if fusefs_line not in content:
+            with open(loader_conf, 'a') as file:
+                file.write(fusefs_line + "\n")
+            print(f"Added '{fusefs_line}' to {loader_conf}")
+        else:
+            print(f"The line '{fusefs_line}' is already present in {loader_conf}")
+    else:
+        with open(loader_conf, 'w') as file:
+            file.write(fusefs_line + "\n")
+        print(f"Created {loader_conf} and added '{fusefs_line}'")
+    print("\n" * 3)
+    print("New file systems support successfully added")
+else:
+    print("File system support installation skipped.")
+print("Proceeding to the next section of the installation...")
+
+os.system('clear')
+primt("")
+
+
+#
