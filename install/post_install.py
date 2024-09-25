@@ -177,4 +177,93 @@ else:
     print("Git installation skipped.")
 
 os.system('clear')
+primt("")
+
+
+# 3. Installation of OpenJDK
+
+# Ask the user which version of OpenJDK to install
+while True:
+    print("Select the version of OpenJDK to install:")
+    print("1. OpenJDK 11 (Java Runtime Environment 11)")
+    print("2. OpenJDK 17 (Java Development Kit 17)")
+    print("3. OpenJDK 21 (Java Development Kit 21)")
+    user_choice = input("Enter 1, 2, or 3: ").strip()
+
+    if user_choice in ['1', '2', '3']:
+        break
+    print("Invalid input. Please enter 1, 2, or 3.")
+
+# Determine the package to install based on user's choice
+if user_choice == '1':
+    jdk_package = 'openjdk11'
+elif user_choice == '2':
+    jdk_package = 'openjdk17'
+else:
+    jdk_package = 'openjdk21'
+
+# Confirm the installation
+while True:
+    confirm_install = input(f"Do you want to install {jdk_package}? (y/n): ").strip().lower()
+    if confirm_install in ['y', 'n']:
+        break
+    print("Please enter 'y' for yes or 'n' for no.")
+
+if confirm_install == 'y':
+    # Installing the selected OpenJDK package
+    print(f"Installing {jdk_package}...")
+    subprocess.run(["pkg", "install", "-y", jdk_package], check=True)
+
+    # 3.2 Mounting fdescfs and procfs
+
+    # Display the message
+    print("Mounting fdesc and proc filesystems...")
+
+    # Mount fdescfs
+    subprocess.run(["mount", "-t", "fdescfs", "fdesc", "/dev/fd"], check=True)
+
+    # Mount procfs
+    subprocess.run(["mount", "-t", "procfs", "proc", "/proc"], check=True)
+
+    # 3.3 Adding entries to /etc/fstab for persistent mounting
+
+    # Print a blank line
+    print("")
+
+    # Display the message
+    print("Adding entries to /etc/fstab for auto-mounting fdescfs and procfs...")
+
+    # Define the entries to add to /etc/fstab
+    fstab_entries = """
+    fdesc   /dev/fd         fdescfs             rw      0   0
+    proc    /proc           procfs              rw      0   0
+    """
+
+    # Add the entries to /etc/fstab
+    with open("/etc/fstab", "a") as fstab_file:
+        fstab_file.write(fstab_entries)
+
+    # 7.4 Checking Java installation
+
+    # Print a blank line
+    print("")
+
+    # Display the message
+    print(f"Checking {jdk_package} installation:")
+
+    # Check Java version
+    subprocess.run(["java", "-version"], check=True)
+
+    # Check javac version (only for JDK packages)
+    if jdk_package != 'openjdk11':
+        subprocess.run(["javac", "-version"], check=True)
+
+    print(f"{jdk_package} successfully installed and configured.")
+
+else:
+    print("OpenJDK installation skipped.")
+
+print("")
+os.system('clear')
+primt("")
 
