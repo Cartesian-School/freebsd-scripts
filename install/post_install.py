@@ -387,8 +387,8 @@ primt("")
 # 5. Install the webcam drivers and utilities
 print("Install the webcam drivers and utilities")
 print("")
-# 5.1. Ask the user if they want to install the webcam drivers and utilities
 
+# 5.1. Ask the user if they want to install the webcam drivers and utilities
 while True:
     install_webcam = input("Do you want to install the webcam drivers and utilities? (y/n): ").strip().lower()
     if install_webcam in ['y', 'n']:
@@ -397,30 +397,17 @@ while True:
 
 if install_webcam == 'y':
     # 5.2. Installation of necessary packages for the webcam
-
-    # Display a message about the installation
     print("Installing v4l-utils, v4l_compat, and webcamd...")
-
-    # Install the necessary webcam packages
     subprocess.run(["pkg", "install", "-y", "v4l-utils", "v4l_compat", "webcamd"], check=True)
 
     # 5.3. Configure webcamd as a service
-
-    # Display a message about configuring the service
     print("Configuring webcamd as a service...")
-
-    # Enable webcamd to start on system boot
     subprocess.run(["sysrc", 'webcamd_enable="YES"'], check=True)
 
     # 5.4. Load the cuse module for the webcam
-
-    # Display a message about loading the module
     print("Loading the cuse module...")
-
-    # Load the cuse module
     subprocess.run(["kldload", "cuse"], check=True)
 
-    # Path to the loader.conf file
     loader_conf = "/boot/loader.conf"
     cuse_line = 'cuse_load="YES"'
 
@@ -440,33 +427,19 @@ if install_webcam == 'y':
             file.write(cuse_line + "\n")
         print(f"Created {loader_conf} and added '{cuse_line}'")
 
-    # Print empty lines for formatting
-    print("")
     print("")
 
     # 5.5. Add user permissions for working with the webcam
-
-    # Display a message about adding the user to the webcamd group
     print("Adding root and the current user to the webcamd group...")
-
-    # Get the name of the current user
     current_user = getpass.getuser()
-
-    # Add root and the current user to the webcamd group
     subprocess.run(["pw", "groupmod", "webcamd", "-m", f"root,{current_user}"], check=True)
-
     print("")
 
     # 5.6. Check connected devices
-
-    # Display a message about checking connected USB devices
     print("Checking connected USB devices for the webcam...")
-
-    # Check the connected USB devices using usbconfig
     usbconfig_output = subprocess.run(["usbconfig", "list"], capture_output=True, text=True, check=True)
     print(usbconfig_output.stdout)
 
-    # Extract the first ugen device from the output (assuming it's the webcam)
     webcam_device = None
     for line in usbconfig_output.stdout.splitlines():
         if "ugen" in line:
@@ -478,18 +451,13 @@ if install_webcam == 'y':
 
         # 5.7. Automatically configure webcamd with the detected device
         print(f"Configuring webcamd with device {webcam_device}...")
-
-        # Set flags for webcamd with the detected device
         subprocess.run(["sysrc", f'webcamd_0_flags="-d {webcam_device}"'], check=True)
-
         print("Webcam successfully configured.")
     else:
         print("No webcam device detected. Continuing with the next section.")
-
 else:
     print("Webcam installation skipped.")
-
-# Continue with the next section of the installation
+primt("")
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
