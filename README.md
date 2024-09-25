@@ -1,4 +1,7 @@
 # Scripts for FreeBSD
+
+![freebsd_logo_icon_169148-2385126370](https://github.com/user-attachments/assets/7b50fe5f-525d-43b7-aac8-5ce56066ec6d)
+
  
 > **There is nothing better than being a free man. FreeBSD for freeman.**
 
