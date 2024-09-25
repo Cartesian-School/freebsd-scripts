@@ -89,11 +89,15 @@ print("Sudo rights for the %wheel group have been updated.")
 os.system('clear')
 
 # 2. Git installation
-print(" Git installation")
-# Ask the user if they want to install Git
-install_git = input("Do you want to install Git? (yes/no): ").strip().lower()
+print("Git installation")
+# Ask the user if they want to install Git and only accept 'y' or 'n'
+while True:
+    install_git = input("Do you want to install Git? (y/n): ").strip().lower()
+    if install_git in ['y', 'n']:
+        break
+    print("Please enter 'y' for yes or 'n' for no.")
 
-if install_git == "yes":
+if install_git == 'y':
     # Print a blank line
     print(" ")
 
@@ -172,7 +176,5 @@ if install_git == "yes":
 else:
     print("Git installation skipped.")
 
-print("group wheel successfully added")
-
-
+os.system('clear')
 
