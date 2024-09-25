@@ -285,3 +285,97 @@ else:
 os.system('clear')
 primt("")
 
+
+# 4. Sound driver installation and configuration
+
+# 4.1. Sound driver installation
+
+# Ask the user if they want to configure the sound device
+while True:
+    configure_sound = input("Do you want to configure the sound device? (y/n): ").strip().lower()
+    if configure_sound in ['y', 'n']:
+        break
+    print("Please enter 'y' for yes or 'n' for no.")
+
+if configure_sound == 'y':
+    # Display the message about configuring the sound device
+    print("Configuring the sound device...")
+
+    # Load the snd_hda module
+    subprocess.run(["kldload", "snd_hda"], check=True)
+
+    # Path to the /boot/loader.conf file
+    loader_conf = "/boot/loader.conf"
+    snd_hda_line = 'snd_hda_load="YES"'
+
+    # Check if 'snd_hda_load="YES"' is present in /boot/loader.conf, if not, add it
+    if os.path.exists(loader_conf):
+        with open(loader_conf, 'r') as file:
+            content = file.read()
+        if snd_hda_line not in content:
+            with open(loader_conf, 'a') as file:
+                file.write(snd_hda_line + "\n")
+            print(f"Added '{snd_hda_line}' to {loader_conf}")
+        else:
+            print(f"The line '{snd_hda_line}' is already present in {loader_conf}")
+    else:
+        # If the file doesn't exist, create it and add the line
+        with open(loader_conf, 'w') as file:
+            file.write(snd_hda_line + "\n")
+        print(f"Created file {loader_conf} and added '{snd_hda_line}'")
+
+    # Set hw.snd.default_unit=0
+    subprocess.run(["sysctl", "hw.snd.default_unit=0"], check=True)
+
+    # Path to the /etc/sysctl.conf file
+    sysctl_conf = "/etc/sysctl.conf"
+    hw_snd_line = 'hw.snd.default_unit=0'
+
+    # Check if 'hw.snd.default_unit=0' is present in /etc/sysctl.conf, if not, add it
+    if os.path.exists(sysctl_conf):
+        with open(sysctl_conf, 'r') as file:
+            content = file.read()
+        if hw_snd_line not in content:
+            with open(sysctl_conf, 'a') as file:
+                file.write(hw_snd_line + "\n")
+            print(f"Added '{hw_snd_line}' to {sysctl_conf}")
+        else:
+            print(f"The line '{hw_snd_line}' is already present in {sysctl_conf}")
+    else:
+        # If the file doesn't exist, create it and add the line
+        with open(sysctl_conf, 'w') as file:
+            file.write(hw_snd_line + "\n")
+        print(f"Created file {sysctl_conf} and added '{hw_snd_line}'")
+
+    # 4.2. Installation and configuration of sound packages for XFCE
+
+    # Display the message about installing sound packages
+    print("Installing sound packages for XFCE...")
+
+    # List of packages to install
+    packages = [
+        "pulseaudio",
+        "pavucontrol",
+        "xfce4-pulseaudio-plugin",
+        "vlc"
+    ]
+
+    # Install the packages
+    subprocess.run(["pkg", "install", "-y"] + packages, check=True)
+
+    # Enable pulseaudio on system startup
+    subprocess.run(["sysrc", 'pulseaudio_enable="YES"'], check=True)
+
+    # Re-apply the hw.snd.default_unit=0 setting
+    subprocess.run(["sysctl", "hw.snd.default_unit=0"], check=True)
+
+    # Print a blank line for formatting
+    print("")
+
+    print("Sound packages successfully installed and configured.")
+else:
+    print("Sound device configuration skipped.")
+    
+os.system('clear')
+primt("")
+
