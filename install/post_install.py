@@ -488,3 +488,84 @@ print("Proceeding to the next section of the installation...")
 
 os.system('clear')
 primt("")
+
+# 7. Install the Nvidia 340 driver
+print("7. Install the Nvidia 340 driver")
+while True:
+    install_nvidia = input("Do you want to install the Nvidia 340 driver? (y/n): ").strip().lower()
+    if install_nvidia in ['y', 'n']:
+        break
+    print("Please enter 'y' for yes or 'n' for no.")
+
+if install_nvidia == 'y':
+    print("Installing Nvidia 340 driver...")
+    subprocess.run(["pkg", "install", "-y", "nvidia-driver-340"], check=True)
+    print("Adding the Nvidia module to /etc/rc.conf")
+    rc_conf = "/etc/rc.conf"
+    rc_conf_params = {
+        'kld_list="nvidia"': 'kld_list="nvidia"',
+        'linux_enable="YES"': 'linux_enable="YES"',
+        'dbus_enable="YES"': 'dbus_enable="YES"'
+    }
+
+    if os.path.exists(rc_conf):
+        with open(rc_conf, 'r') as file:
+            rc_conf_content = file.read()
+    else:
+        rc_conf_content = ""
+
+    for param, line in rc_conf_params.items():
+        if param not in rc_conf_content:
+            with open(rc_conf, 'a') as file:
+                file.write(line + "\n")
+            print(f"Added line '{line}' to {rc_conf}")
+        else:
+            print(f"The line '{line}' is already present in {rc_conf}")
+
+    print("")
+    print("Adding configuration for X11")
+    xorg_conf = "/etc/X11/xorg.conf"
+
+    if not os.path.isfile(xorg_conf):
+        print(f"{xorg_conf} - file not found.")
+        with open(xorg_conf, 'w') as file:
+            pass  
+        print(f"Created empty file {xorg_conf}")
+
+    # Configuration to add to xorg.conf
+    xorg_conf_content = '''
+Section "Device"
+    Identifier "Nvidia Card"
+    Driver "nvidia"
+EndSection
+
+Section "Screen"
+    Identifier "Screen0"
+    Device "Nvidia Card"
+    Monitor "Monitor0"
+    DefaultDepth 24
+    SubSection "Display"
+        Depth 24
+        Modes "1920x1080"
+    EndSubSection
+EndSection
+
+Section "ServerFlags"
+    Option "IgnoreABI" "True"
+EndSection
+'''
+
+    with open(xorg_conf, 'a') as file:
+        file.write(xorg_conf_content)
+    print("Contents of /etc/X11/xorg.conf:")
+    with open(xorg_conf, 'r') as file:
+        print(file.read())
+    print("")
+    print("NVIDIA driver successfully installed")
+
+else:
+    print("Nvidia 340 driver installation skipped.")
+print("Proceeding to the next section of the installation...")
+
+os.system('clear')
+primt("")
