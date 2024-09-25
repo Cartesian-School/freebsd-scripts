@@ -181,89 +181,107 @@ primt("")
 
 
 # 3. Installation of OpenJDK
+print("")
 
-# Ask the user which version of OpenJDK to install
+# 3.1. Ask the user if they want to install OpenJDK
+
 while True:
-    print("Select the version of OpenJDK to install:")
-    print("1. OpenJDK 11 (Java Runtime Environment 11)")
-    print("2. OpenJDK 17 (Java Development Kit 17)")
-    print("3. OpenJDK 21 (Java Development Kit 21)")
-    user_choice = input("Enter 1, 2, or 3: ").strip()
-
-    if user_choice in ['1', '2', '3']:
-        break
-    print("Invalid input. Please enter 1, 2, or 3.")
-
-# Determine the package to install based on user's choice
-if user_choice == '1':
-    jdk_package = 'openjdk11'
-elif user_choice == '2':
-    jdk_package = 'openjdk17'
-else:
-    jdk_package = 'openjdk21'
-
-# Confirm the installation
-while True:
-    confirm_install = input(f"Do you want to install {jdk_package}? (y/n): ").strip().lower()
-    if confirm_install in ['y', 'n']:
+    install_jdk = input("Do you want to install OpenJDK? (y/n): ").strip().lower()
+    if install_jdk in ['y', 'n']:
         break
     print("Please enter 'y' for yes or 'n' for no.")
 
-if confirm_install == 'y':
-    # Installing the selected OpenJDK package
-    print(f"Installing {jdk_package}...")
-    subprocess.run(["pkg", "install", "-y", jdk_package], check=True)
+if install_jdk == 'y':
+    # Ask the user which version of OpenJDK to install
+    while True:
+        print("Select the version of OpenJDK to install:")
+        print("1. OpenJDK 11 (Java Runtime Environment 11 LTS)")
+        print("2. OpenJDK 17 (Java Development Kit 17 LTS)")
+        print("3. OpenJDK 21 (Java Development Kit 21 LTS)")
+        print("0. Cancel and skip installation")
+        user_choice = input("Enter 1, 2, 3, or 0: ").strip()
 
-    # 3.2 Mounting fdescfs and procfs
+        if user_choice in ['0', '1', '2', '3']:
+            break
+        print("Invalid input. Please enter 1, 2, 3, or 0.")
 
-    # Display the message
-    print("Mounting fdesc and proc filesystems...")
+    # If the user selects '0', skip installation
+    if user_choice == '0':
+        print("OpenJDK installation skipped.")
+    else:
+        # Determine the package to install based on user's choice
+        if user_choice == '1':
+            jdk_package = 'openjdk11'
+        elif user_choice == '2':
+            jdk_package = 'openjdk17'
+        elif user_choice == '3':
+            jdk_package = 'openjdk21'
 
-    # Mount fdescfs
-    subprocess.run(["mount", "-t", "fdescfs", "fdesc", "/dev/fd"], check=True)
+        # Confirm the installation
+        while True:
+            confirm_install = input(f"Do you want to install {jdk_package}? (y/n): ").strip().lower()
+            if confirm_install in ['y', 'n']:
+                break
+            print("Please enter 'y' for yes or 'n' for no.")
 
-    # Mount procfs
-    subprocess.run(["mount", "-t", "procfs", "proc", "/proc"], check=True)
+        if confirm_install == 'y':
+            # Installing the selected OpenJDK package
+            print(f"Installing {jdk_package}...")
+            subprocess.run(["pkg", "install", "-y", jdk_package], check=True)
+            print("")
+            
+            # 3.2 Mounting fdescfs and procfs
 
-    # 3.3 Adding entries to /etc/fstab for persistent mounting
+            # Display the message
+            print("Mounting fdesc and proc filesystems...")
 
-    # Print a blank line
-    print("")
+            # Mount fdescfs
+            subprocess.run(["mount", "-t", "fdescfs", "fdesc", "/dev/fd"], check=True)
 
-    # Display the message
-    print("Adding entries to /etc/fstab for auto-mounting fdescfs and procfs...")
+            # Mount procfs
+            subprocess.run(["mount", "-t", "procfs", "proc", "/proc"], check=True)
 
-    # Define the entries to add to /etc/fstab
-    fstab_entries = """
-    fdesc   /dev/fd         fdescfs             rw      0   0
-    proc    /proc           procfs              rw      0   0
-    """
+            # Print a blank line
+            print("")
 
-    # Add the entries to /etc/fstab
-    with open("/etc/fstab", "a") as fstab_file:
-        fstab_file.write(fstab_entries)
+            # 7.3 Adding entries to /etc/fstab for persistent mounting
 
-    # 7.4 Checking Java installation
+            # Print a blank line
+            print("")
 
-    # Print a blank line
-    print("")
+            # Display the message
+            print("Adding entries to /etc/fstab for auto-mounting fdescfs and procfs...")
 
-    # Display the message
-    print(f"Checking {jdk_package} installation:")
+            # Define the entries to add to /etc/fstab
+            fstab_entries = """
+            fdesc   /dev/fd         fdescfs             rw      0   0
+            proc    /proc           procfs              rw      0   0
+            """
 
-    # Check Java version
-    subprocess.run(["java", "-version"], check=True)
+            # Add the entries to /etc/fstab
+            with open("/etc/fstab", "a") as fstab_file:
+                fstab_file.write(fstab_entries)
+            print("")
 
-    # Check javac version (only for JDK packages)
-    if jdk_package != 'openjdk11':
-        subprocess.run(["javac", "-version"], check=True)
+            # 3.4 Checking Java installation
 
-    print(f"{jdk_package} successfully installed and configured.")
+            # Display the message
+            print(f"Checking {jdk_package} installation:")
 
+            # Check Java version
+            subprocess.run(["java", "-version"], check=True)        
+            print("")
+
+            # Check javac version (only for JDK packages)
+            if jdk_package != 'openjdk11':
+                subprocess.run(["javac", "-version"], check=True)
+
+            print(f"{jdk_package} successfully installed and configured.")
+        else:
+            print(f"Installation of {jdk_package} was canceled.")
 else:
     print("OpenJDK installation skipped.")
 
-print("")
 os.system('clear')
 primt("")
 
