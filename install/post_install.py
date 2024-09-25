@@ -3,6 +3,8 @@
 import os
 import subprocess
 import shutil
+import difflib
+
 
 os.system('clear')
 
@@ -48,34 +50,43 @@ print("=========================================================================
 print("")
 os.system('clear')
 
-# 1. Unlock %wheel
-subprocess.run(["pkg", "install", "-y", "sudo"])
-print("add %wheel in sudoers...")
+# 1. Automatic Sudo Rights Configuration for the %wheel Group
 
-# sudoers
+# Path to the sudoers file
 sudoers_file = '/usr/local/etc/sudoers'
 backup_file = '/usr/local/etc/sudoers.bak'
 
-# string in sudoers
-search_line = '%wheel ALL=(ALL) ALL'
-line_found = False
+# Create a backup of the sudoers file
+shutil.copyfile(sudoers_file, backup_file)
 
+# Open the sudoers file for reading and writing
 with open(sudoers_file, 'r') as file:
-    for line in file:
-        line = line.strip()
-        if line == search_line:
-            line_found = True
-            break
+    lines = file.readlines()
 
-if not line_found:
-    # backup sudoers
-    shutil.copyfile(sudoers_file, backup_file)
-    # added new string in sudoers
-    with open(sudoers_file, 'a') as file:
-        file.write('%wheel ALL=(ALL:ALL) ALL\n')
-    print(" %wheel successfully added")
-else:
-    print("The %wheel group already has sudo rights.")
+# Search for the commented line
+commented_line = '#%wheel ALL=(ALL) ALL'
+uncommented_line = '%wheel ALL=(ALL:ALL) ALL'
+
+# Use difflib to compare the content
+differ = difflib.Differ()
+
+# Compare lines and display differences
+diff = list(differ.compare([commented_line], [uncommented_line]))
+
+# Output the differences to show how the lines differ
+print("\n".join(diff))
+
+# If the commented line is found, replace it with the uncommented one
+with open(sudoers_file, 'w') as file:
+    for line in lines:
+        if commented_line in line:
+            file.write(uncommented_line + '\n')
+            print(f"The line '{commented_line}' was replaced with '{uncommented_line}'")
+        else:
+            file.write(line)
+
+print("Sudo rights for the %wheel group have been updated.")
+
 
 print("group wheel successfully added")
 
