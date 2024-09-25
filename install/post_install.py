@@ -5,9 +5,7 @@ import subprocess
 import shutil
 import difflib
 
-
 os.system('clear')
-
 print("-----------------------")
 print("   Cartesian School    ")
 print("-----------------------")
@@ -16,7 +14,7 @@ print("************* 14.1 ****")
 print("* 09.24 ***************")
 print("***********************")
 os.system('clear')
-
+print("")
 print("=======================================================================")
 print("")
 print("")
