@@ -4,6 +4,7 @@ import os
 import subprocess
 import shutil
 import difflib
+import re
 
 os.system('clear')
 print("-----------------------")
@@ -85,6 +86,93 @@ with open(sudoers_file, 'w') as file:
 
 print("Sudo rights for the %wheel group have been updated.")
 
+os.system('clear')
+
+# 2. Git installation
+print(" Git installation")
+# Ask the user if they want to install Git
+install_git = input("Do you want to install Git? (yes/no): ").strip().lower()
+
+if install_git == "yes":
+    # Print a blank line
+    print(" ")
+
+    # Display the message about Git installation
+    print("Installing Git...")
+
+    # Install Git using pkg
+    subprocess.run(["pkg", "install", "-y", "git"])
+
+    # Display the installed Git version
+    subprocess.run(["git", "-V"])
+
+    # Ask for user's name and email for Git configuration
+    while True:
+        user_name = input("Enter your Git user.name (e.g., 'John Doe'): ").strip()
+        # Check if the input contains only valid characters (letters, spaces, and apostrophes)
+        if re.match(r"^[a-zA-Z\s']+$", user_name):
+            break
+        print("Invalid name. Please use only letters, spaces, and apostrophes.")
+
+    while True:
+        user_email = input("Enter your Git user.email (e.g., 'example@mail.com'): ").strip()
+        # Validate email using regex
+        if re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", user_email):
+            break
+        print("Invalid email. Please enter a valid email address.")
+
+    # Configure Git with the provided user name and email
+    subprocess.run(["git", "config", "--global", "user.name", user_name])
+    subprocess.run(["git", "config", "--global", "user.email", user_email])
+
+    # Configure Git editor
+    subprocess.run(["git", "config", "--global", "core.editor", "code --wait"])
+
+    # Set default branch to 'main'
+    subprocess.run(["git", "config", "--global", "init.defaultBranch", "main"])
+
+    # Configure pull behavior
+    subprocess.run(["git", "config", "--global", "pull.rebase", "false"])
+
+    # Set automatic conversion of line endings
+    subprocess.run(["git", "config", "--global", "core.autocrlf", "input"])
+
+    # Configure fast-forward merges
+    subprocess.run(["git", "config", "--global", "merge.ff", "only"])
+
+    # Enable color in the Git interface
+    subprocess.run(["git", "config", "--global", "color.ui", "auto"])
+
+    # Configure branch colors
+    subprocess.run(["git", "config", "--global", "color.branch.current", "yellow reverse"])
+    subprocess.run(["git", "config", "--global", "color.branch.local", "yellow"])
+    subprocess.run(["git", "config", "--global", "color.branch.remote", "blue"])
+
+    # Configure diff colors
+    subprocess.run(["git", "config", "--global", "color.diff.meta", "yellow bold"])
+    subprocess.run(["git", "config", "--global", "color.diff.frag", "magenta bold"])
+    subprocess.run(["git", "config", "--global", "color.diff.old", "red bold"])
+    subprocess.run(["git", "config", "--global", "color.diff.new", "green bold"])
+
+    # Configure status colors
+    subprocess.run(["git", "config", "--global", "color.status.added", "green"])
+    subprocess.run(["git", "config", "--global", "color.status.changed", "yellow"])
+    subprocess.run(["git", "config", "--global", "color.status.untracked", "red"])
+
+    # Display the current Git configuration
+    print("Git config list: ")
+    print("--------------------------------------------------------")
+    print("")
+
+    subprocess.run(["git", "config", "--list"])
+
+    print("")
+    print("Git successfully installed and configured")
+
+else:
+    print("Git installation skipped.")
 
 print("group wheel successfully added")
+
+
 
