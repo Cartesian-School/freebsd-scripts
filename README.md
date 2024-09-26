@@ -3,7 +3,7 @@
 ![freebsd_logo_icon_169148-2385126370](https://github.com/user-attachments/assets/7b50fe5f-525d-43b7-aac8-5ce56066ec6d)
 
  
-> **There is nothing better than being a free man. FreeBSD for freeman.**
+> **There is nothing better than being a free man. FreeBSD for freemen.**
 
 ##
 ![66203-devil-openbsd-linux-unix-freebsd-berkeley-distribution-3421913725](https://github.com/user-attachments/assets/bafe93fe-df43-4a4a-b928-b7f5fbb24479)
