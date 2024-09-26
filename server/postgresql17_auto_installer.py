@@ -56,6 +56,24 @@ def configure_postgresql():
     # Restart PostgreSQL service to apply the changes
     subprocess.run(["service", "postgresql", "restart"], check=True)
 
+# Function to display instructions for creating a new user and database
+def display_instructions():
+    print("""
+    ===========================================
+    Steps to create a new PostgreSQL user and database:
+    1. Log in to the PostgreSQL shell as the superuser:
+       $ sudo -u postgres psql
+    2. Create a new user:
+       postgres=# CREATE USER your_username WITH PASSWORD 'your_password';
+    3. Create a new database:
+       postgres=# CREATE DATABASE your_database;
+    4. Grant privileges to the new user on the new database:
+       postgres=# GRANT ALL PRIVILEGES ON DATABASE your_database TO your_username;
+    5. Exit the PostgreSQL shell:
+       postgres=# \\q
+    ===========================================
+    """)
+
 # Main script flow
 def main():
     display_clean()
@@ -75,6 +93,7 @@ def main():
         configure_postgresql()
         
         print("PostgreSQL 17 installation and configuration completed successfully.")
+        display_instructions()
     else:
         print("PostgreSQL installation skipped.")
 
