@@ -894,4 +894,37 @@ else:
 os.system('clear')
 primt("")
 
-#
+
+# 15. Installing additional utilities and software
+print("Installing additional utilities and software")
+print("--------------------------------------------------------")
+print("")
+while True:
+    install_utilities = input("Do you want to install additional utilities and software (e.g., mc, vscode, gimp)? (y/n): ").strip().lower()
+    if install_utilities in ['y', 'n']:
+        break
+    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+# If the user chooses to install additional utilities and software
+if install_utilities == 'y':
+    print("")
+    
+    # List of packages to install
+    packages = [
+        "mc", "firefox", "nano", "zip", "unzip", "7-zip", "arc", "rar", "unrar", "htop",
+        "gimp", "krita", "vscode", "gedit", "ark", "vim", "telegram-desktop-qt6",
+        "py311-jupyter", "py311-pytest-jupyter", "cmake", "gcc14", "pycharm-ce"
+    ]
+
+    # Install each package
+    for package in packages:
+        subprocess.run(["pkg", "install", "-y", package], check=True)
+    
+    print("")
+    print("All additional utilities and software successfully installed.")
+else:
+    print("Installation of additional utilities and software skipped.")
+
+os.system('clear')
+primt("")
+
