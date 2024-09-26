@@ -2,6 +2,8 @@
 
 ## Databases
 
+> These scripts provide an automated way to install and configure databases on FreeBSD.
+
 ### PostgreSQL
 
 1. **PostgreSQL 17** - Installation script: [postgresql17_auto_installer.py](postgresql17_auto_installer.py)
@@ -11,5 +13,5 @@
 
 1. **MySQL 8.4** - Installation script: [mysql84_auto_installer.py](mysql84_auto_installer.py)
 
-These scripts provide an automated way to install and configure databases on FreeBSD.
+
 
