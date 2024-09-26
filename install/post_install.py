@@ -926,5 +926,72 @@ else:
     print("Installation of additional utilities and software skipped.")
 
 os.system('clear')
-primt("")
+print("")
 
+
+# 15. Install additional utilities and software
+
+# List packages with descriptions
+packages = {
+    "mc": "Midnight Commander (file manager)",
+    "firefox": "Firefox (web browser)",
+    "nano": "Nano (text editor)",
+    "zip": "Zip (compression tool)",
+    "unzip": "Unzip (extraction tool)",
+    "7-zip": "7-Zip (compression tool)",
+    "arc": "Arc (compression tool)",
+    "rar": "RAR (compression tool)",
+    "unrar": "UnRAR (extraction tool)",
+    "htop": "Htop (process viewer)",
+    "gimp": "GIMP (image editor)",
+    "krita": "Krita (digital painting)",
+    "vscode": "VSCode (code editor)",
+    "gedit": "Gedit (text editor)",
+    "ark": "Ark (file archiver)",
+    "vim": "Vim (text editor)",
+    "telegram-desktop-qt6": "Telegram Desktop (messaging)",
+    "py311-jupyter": "Jupyter Notebook (interactive notebook)",
+    "py311-pytest-jupyter": "Pytest Jupyter (testing tool)",
+    "cmake": "CMake (build system)",
+    "gcc14": "GCC 14 (C/C++ compiler)",
+    "pycharm-ce": "PyCharm CE (Python IDE)"
+}
+
+def ask_install(package, description):
+    while True:
+        answer = input(f"Do you want to install {description}? (y/n): ").strip().lower()
+        if answer in ['y', 'n']:
+            return answer == 'y'
+        print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+while True:
+    install_utilities = input("Do you want to install additional utilities and software? (y/n): ").strip().lower()
+    if install_utilities in ['y', 'n']:
+        break
+    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+if install_utilities == 'y':
+    selected_packages = []
+    
+    for package, description in packages.items():
+        if ask_install(package, description):
+            selected_packages.append(package)
+    
+    if selected_packages:
+        print("")
+        print("Installing selected utilities and software")
+        print("--------------------------------------------------------")
+        print("")
+        
+        for package in selected_packages:
+            subprocess.run(["pkg", "install", "-y", package], check=True)
+        
+        print("")
+        print("Selected utilities and software successfully installed.")
+    else:
+        print("No packages selected for installation.")
+else:
+    print("Installation of additional utilities and software skipped.")
+
+os.system('clear')
+print("")
