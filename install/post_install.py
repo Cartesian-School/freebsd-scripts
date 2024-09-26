@@ -769,3 +769,93 @@ os.system('clear')
 primt("")
 
 
+# 13. Creating a New User
+print("")
+print("Creating a New User")
+print("--------------------------------------------------------")
+print("")
+
+# Ask the user if they want to create a new user
+while True:
+    create_user = input("Do you want to create a new user? (y/n): ").strip().lower()
+    if create_user in ['y', 'n']:
+        break
+    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+# 13.1 If the user chooses to create a new user
+if create_user == 'y':
+    print("")
+
+    # Prompt for a new username
+    newuser = input("Enter new user name (alphanumeric, no spaces): ").strip()
+
+    # 13.2 Checking the username for correctness
+    while not re.match(r'^[a-zA-Z0-9_-]+$', newuser):
+        print("Invalid username. Please use only alphanumeric characters, dashes or underscores.")
+        newuser = input("Enter new user name: ").strip()
+
+    # Prompt for the full name
+    print("")
+    fullname = input(f"Enter full name for '{newuser}': ").strip()
+
+    # Clean up full name by removing extra spaces
+    fullname = fullname.strip()
+
+    # 13.3 Creating the new user and adding them to the wheel group
+    print(f"Enter password for {newuser}:")
+    subprocess.run(["pw", "useradd", "-n", newuser, "-c", fullname, "-s", "/usr/local/bin/bash", "-m", "-G", "wheel"], check=True)
+
+    # Set password for the new user
+    subprocess.run(["passwd", newuser], check=True)
+
+    # Add the user to webcamd and video groups
+    subprocess.run(["pw", "groupmod", "webcamd", "-m", newuser], check=True)
+    subprocess.run(["pw", "groupmod", "video", "-m", newuser], check=True)
+
+    # 13.4 Creating standard and additional directories
+    home_dir = os.path.expanduser(f"~{newuser}")
+    dirs = [".icons", ".themes", "Code", "Projects", "Documents", "Downloads", "Pictures", "Music", "Videos", "Templates", "Scripts", "Backups"]
+
+    for directory in dirs:
+        os.makedirs(os.path.join(home_dir, directory), exist_ok=True)
+
+    # 13.5 Adding folders to Thunar's bookmarks
+    bookmarks_file = os.path.join(home_dir, ".config", "gtk-3.0", "bookmarks")
+
+    # Create the configuration directory if it doesn't exist
+    os.makedirs(os.path.dirname(bookmarks_file), exist_ok=True)
+
+    # If the bookmarks file exists, remove it
+    if os.path.exists(bookmarks_file):
+        os.remove(bookmarks_file)
+
+    # Create a new bookmarks file with folders
+    with open(bookmarks_file, 'w') as f:
+        f.write(f"file://{home_dir}/Code\n")
+        f.write(f"file://{home_dir}/Projects\n")
+        f.write(f"file://{home_dir}/Documents\n")
+        f.write(f"file://{home_dir}/Downloads\n")
+        f.write(f"file://{home_dir}/Pictures\n")
+        f.write(f"file://{home_dir}/Music\n")
+        f.write(f"file://{home_dir}/Videos\n")
+        f.write(f"file://{home_dir}/Templates\n")
+        f.write(f"file://{home_dir}/Scripts\n")
+        f.write(f"file://{home_dir}/Backups\n")
+
+    # Restart Thunar to apply settings (optional)
+    subprocess.run(["thunar", "-q"], check=True)
+    subprocess.run(["thunar"], check=True)
+
+    # 13.6 Set ownership and permissions for the user's home directory
+    subprocess.run(["chmod", "755", f"/home/{newuser}"], check=True)
+    subprocess.run(["chown", "-R", f"{newuser}:{newuser}", f"/home/{newuser}"], check=True)
+    print("")
+    print(f"New user '{newuser}' successfully added!")
+else:
+    print("User creation skipped.")
+
+os.system('clear')
+primt("")
+
+
+# 14.
