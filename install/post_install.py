@@ -858,4 +858,40 @@ os.system('clear')
 primt("")
 
 
-# 14.
+# 14. Install Display Manager LightDM 
+print("Install Display Manager LightDM")
+print("-------------------------------------------------------- \n")
+
+# Function to check if a line exists in a file and add it if not
+def add_if_missing(filepath, line):
+    with open(filepath, 'r') as file:
+        content = file.read()
+    if line not in content:
+        with open(filepath, 'a') as file:
+            file.write(line + "\n")
+
+while True:
+    install_lightdm = input("Do you want to install LightDM? (y/n): ").strip().lower()
+    if install_lightdm in ['y', 'n']:
+        break
+    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+if install_lightdm == 'y':
+    print("")
+    subprocess.run(["pkg", "install", "-y", "lightdm"], check=True)
+    subprocess.run(["pkg", "install", "-y", "lightdm-gtk-greeter"], check=True)
+
+    # Enable LightDM in /etc/rc.conf
+    add_if_missing("/etc/rc.conf", 'lightdm_enable="YES"')
+
+    # Modify the permissions for lightdm.conf
+    subprocess.run(["chmod", "644", "/usr/local/etc/lightdm/lightdm.conf"], check=True)
+    print("\n")
+    print("LightDM successfully installed")
+else:
+    print("LightDM installation skipped.")
+
+os.system('clear')
+primt("")
+
+#
