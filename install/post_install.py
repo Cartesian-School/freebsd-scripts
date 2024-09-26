@@ -180,7 +180,7 @@ else:
     print("Git installation skipped.")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 3. Installation of OpenJDK
@@ -286,7 +286,7 @@ else:
     print("OpenJDK installation skipped.")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 4. Sound driver installation and configuration
@@ -381,7 +381,7 @@ else:
     print("Sound device configuration skipped.")
     
 os.system('clear')
-primt("")
+print("")
 
 
 # 5. Install the webcam drivers and utilities
@@ -461,7 +461,7 @@ primt("")
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 6. Install XOrg
@@ -488,7 +488,7 @@ else:
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 7. Install the Nvidia 340 driver
@@ -570,7 +570,7 @@ else:
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 8. Install XFCE 4
@@ -594,7 +594,7 @@ else:
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 9. install file system support (NTFS, exFAT, FAT32, EXT4, HFS+, FUSE)
@@ -646,7 +646,7 @@ else:
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 10. Install automount for automatic mounting
@@ -671,7 +671,7 @@ else:
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 11. Install Ports
@@ -737,7 +737,7 @@ else:
 print("Proceeding to the next section of the installation...")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 12.Install Bash
@@ -855,7 +855,7 @@ else:
     print("User creation skipped.")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 14. Install Display Manager LightDM 
@@ -892,7 +892,7 @@ else:
     print("LightDM installation skipped.")
 
 os.system('clear')
-primt("")
+print("")
 
 
 # 15. Installing additional utilities and software
