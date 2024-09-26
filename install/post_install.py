@@ -673,6 +673,7 @@ print("Proceeding to the next section of the installation...")
 os.system('clear')
 primt("")
 
+
 # 11. Install Ports
 print("Install Ports")
 
@@ -734,6 +735,35 @@ else:
     update_installed_packages()
 
 print("Proceeding to the next section of the installation...")
+
+os.system('clear')
+primt("")
+
+
+# 12.Install Bash
+print("Install Bash Shell")
+
+# Check if Bash is installed
+def is_bash_installed():
+    result = subprocess.run(["pkg", "info", "bash"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return result.returncode == 0
+
+while True:
+    install_bash = input("Do you want to install Bash? (y/n): ").strip().lower()
+    if install_bash in ['y', 'n']:
+        break
+    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+if install_bash == 'y':
+    if not is_bash_installed():
+        print("Bash is not installed. Installing Bash...")
+        subprocess.run(["pkg", "install", "-y", "bash"], check=True)
+        subprocess.run(["chsh", "-s", "/usr/local/bin/bash"], check=True)
+        print("Bash has been installed and set as the default shell.")
+    else:
+        print("Bash is already installed.")
+else:
+    print("Bash installation skipped.")
 
 os.system('clear')
 primt("")
