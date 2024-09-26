@@ -670,3 +670,72 @@ else:
     print("Automount installation skipped.")
 print("Proceeding to the next section of the installation...")
 
+os.system('clear')
+primt("")
+
+# 11. Install Ports
+print("Install Ports")
+
+def update_installed_packages():
+    while True:
+        update_packages = input("Do you want to update installed packages? (y/n): ").strip().lower()
+        if update_packages in ['y', 'n']:
+            break
+        print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+    
+    if update_packages == 'y':
+        print("Updating installed packages...")
+        subprocess.run(["pkg", "update"], check=True)
+        subprocess.run(["pkg", "upgrade"], check=True)
+        print("Installed packages updated successfully.")
+
+while True:
+    install_ports = input("Do you want to install new FreeBSD ports? (y/n): ").strip().lower()
+    if install_ports in ['y', 'n']:
+        break
+    print("Invalid input. Please enter 'y' for yes or 'n' for no.")
+
+if install_ports == 'y':
+    if os.path.isdir("/usr/ports"):
+        print("Old ports found in /usr/ports. Removing old ports directory...")
+        shutil.rmtree("/usr/ports")
+    
+    while True:
+        print("Choose how you want to install the new FreeBSD ports:")
+        print("1 - Download the latest ports from the FreeBSD GitHub repository")
+        print("2 - Download stable ports using portsnap")
+        port_choice = input("Enter 1 or 2: ").strip()
+        if port_choice in ['1', '2']:
+            break
+        print("Invalid choice. Please enter 1 or 2.")
+
+    if port_choice == '1':
+        print("Downloading the latest version of FreeBSD ports from GitHub...")
+        subprocess.run(["git", "clone", "https://git.freebsd.org/ports.git", "/usr/ports"], check=True)
+    elif port_choice == '2':
+        print("Downloading stable FreeBSD ports using portsnap...")
+        subprocess.run(["pkg", "install", "-y", "portsnap"], check=True)
+        subprocess.run(["portsnap", "fetch", "extract"], check=True)
+
+    print("Ports successfully installed.")
+    
+    update_installed_packages()
+
+else:
+    if os.path.isdir("/usr/ports"):
+        print("FreeBSD ports found in /usr/ports.")
+    
+    print("Updating ports using portsnap...")
+    subprocess.run(["pkg", "install", "-y", "portsnap"], check=True)
+    subprocess.run(["portsnap", "fetch", "extract"], check=True)
+    subprocess.run(["portsnap", "fetch", "update"], check=True)
+    print("Ports successfully updated.")
+
+    update_installed_packages()
+
+print("Proceeding to the next section of the installation...")
+
+os.system('clear')
+primt("")
+
+
