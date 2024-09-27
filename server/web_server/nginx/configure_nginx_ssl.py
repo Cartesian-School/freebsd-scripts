@@ -7,6 +7,11 @@ import re
 import shutil
 from pathlib import Path
 
+
+def display_clean():
+    os.system('clear')
+    print("")
+
 def check_root():
     if os.geteuid() != 0:
         print("This script must be run as root.")
@@ -38,7 +43,7 @@ def install_dependencies():
     # Install certbot
     if shutil.which('certbot') is None:
         print("Installing Certbot...")
-        result = subprocess.run(['pkg', 'install', '-y', 'py-certbot', 'py-certbot-nginx'])
+        result = subprocess.run(['pkg', 'install', '-y', 'py311-certbot', 'py311-certbot-nginx'])
         if result.returncode != 0:
             print("Error: Failed to install Certbot.")
             sys.exit(1)
@@ -189,14 +194,34 @@ def configure_nginx_ssl(domain):
     print(f"SSL/TLS setup for {domain} is complete!")
 
 def main():
+    display_clean()
     check_root()
-    print("Automatic SSL/TLS setup for Nginx on FreeBSD...")
+    print("Automatic SSL/TLS setup for Nginx on FreeBSD...\n")
     install_dependencies()
     server_ip = get_server_ip()
     domain = get_domain_name(server_ip)
     email = get_email()
     obtain_ssl_certificate(domain, email)
     configure_nginx_ssl(domain)
+    print("")
+    print("             ,        ,")
+    print("            /(        )`")
+    print("            \\ \\___   / |")
+    print("            /- _  `-/  '")
+    print("           (/\\/ \\ \\   /\\")
+    print("           / /   | `    \\")
+    print("           O O   ) /    |")
+    print("           `-^--'`<     '")
+    print("          (_.)  _  )   /")
+    print("           `.___/   /")
+    print("             `-----' /")
+    print("        <----.     __\\ ")
+    print("        <----|====O)))==)")
+    print("        <----'    `--'")
+    print("             `-----'")
+    print("")  
+    print("Your virtual host configuration is complete!")
+    print("")
 
 if __name__ == "__main__":
     main()
