@@ -2,7 +2,8 @@
 
 # Check for superuser privileges
 if [ "$(id -u)" -ne 0 ]; then
-    echo "This script must be run as root."
+    echo "This script must be run as root!"
+    echo ""
     exit 1
 fi
 
@@ -139,13 +140,14 @@ EOF
 
     # Set ownership of the files
     chown -R "$username:$username" "$public_html_dir"
-
     echo "Test page created at $index_file"
 }
 
 main() {
     clear
+    echo ""
     echo "Enabling Userdir in Nginx and creating a test page for the user..."
+    echo ""
     enable_userdir_in_nginx
     create_user_public_html
     echo ""
