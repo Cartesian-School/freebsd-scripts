@@ -1,134 +1,154 @@
-#!/bin/sh
+#!/usr/bin/env python3
 
-# Check for superuser privileges
-if [ "$(id -u)" -ne 0 ]; then
-    echo "This script must be run as root."
-    exit 1
-fi
+import os
+import sys
+import re
+import subprocess
+from pathlib import Path
+import pwd
+import grp
 
-configure_virtual_host() {
-    while true; do
-        # Prompt the user for the domain name
-        read -p "Enter the domain name for the virtual host (example.org): " domain
-        if [ -z "$domain" ]; then
-            echo "Error: Domain name cannot be empty."
+def check_root():
+    if os.geteuid() != 0:
+        print("This script must be run as root.")
+        sys.exit(1)
+
+def display_clean():
+    os.system('clear')
+    print("")
+
+def get_domain_name():
+    while True:
+        domain = input("Enter the domain name for the virtual host: ").strip()
+        if not domain:
+            print("Error: Domain name cannot be empty.")
             continue
-        fi
+        # Validate domain name
+        if re.match(r'^([a-zA-Z0-9](-?[a-zA-Z0-9])*\.)+[a-zA-Z]{2,}$', domain):
+            return domain
+        else:
+            print("Error: Invalid domain name. Please enter a valid domain.")
 
-        # Validate the domain name for invalid characters
-        if echo "$domain" | grep -Eq '^([a-zA-Z0-9](-?[a-zA-Z0-9])*\.)+[a-zA-Z]{2,}$'; then
-            # Check if the domain already exists
-            config_file="/usr/local/etc/nginx/conf.d/$domain.conf"
-            root_dir="/usr/local/www/$domain"
+def check_existing_configuration(domain, config_file, root_dir):
+    if config_file.exists() or root_dir.exists():
+        print(f"Warning: Configuration for domain '{domain}' already exists.")
+        while True:
+            overwrite_choice = input("Do you want to overwrite the existing configuration? (y/n): ").strip().lower()
+            if overwrite_choice == 'y':
+                print("Overwriting existing configuration...")
+                return True
+            elif overwrite_choice == 'n':
+                print("Please enter a different domain name.")
+                return False
+            else:
+                print("Please enter 'y' or 'n'.")
+    return True
 
-            if [ -e "$config_file" ] || [ -d "$root_dir" ]; then
-                echo "Warning: Configuration for domain '$domain' already exists."
-                while true; do
-                    read -p "Do you want to overwrite the existing configuration? (y/n): " overwrite_choice
-                    case "$overwrite_choice" in
-                        y|Y )
-                            echo "Overwriting existing configuration..."
-                            break 2  # Exit both loops and proceed
-                            ;;
-                        n|N )
-                            echo "Please enter a different domain name."
-                            continue 2  # Restart the outer loop
-                            ;;
-                        * )
-                            echo "Please enter 'y' or 'n'."
-                            ;;
-                    esac
-                done
-            else
-                break  # Domain is valid and does not exist; proceed
-            fi
-        else
-            echo "Error: Invalid domain name. Please enter a valid domain."
-        fi
-    done
+def create_virtual_host(domain):
+    config_dir = Path("/usr/local/etc/nginx/conf.d")
+    config_file = config_dir / f"{domain}.conf"
+    root_dir = Path("/usr/local/www") / domain
+    index_file = root_dir / "index.html"
 
-    # Proceed with setting up the virtual host
-    # Variables are already set: $domain, $config_file, $root_dir
-    index_file="$root_dir/index.html"
+    # Ensure the configuration directory exists
+    config_dir.mkdir(parents=True, exist_ok=True)
 
     # Create the virtual host configuration file
-    echo "Creating virtual host configuration for $domain at $config_file..."
-
-    if [ ! -d "/usr/local/etc/nginx/conf.d" ]; then
-        mkdir -p "/usr/local/etc/nginx/conf.d"
-    fi
-
-    cat > "$config_file" <<EOF
-server {
+    print(f"Creating virtual host configuration for {domain} at {config_file}...")
+    server_block = f"""server {{
     listen       80;
-    server_name  $domain;
+    server_name  {domain};
 
-    location / {
-        root   $root_dir;
+    location / {{
+        root   {root_dir};
         index  index.html index.htm;
-    }
-}
-EOF
-    echo "Virtual host configuration created."
+    }}
+}}"""
+    with open(config_file, 'w') as f:
+        f.write(server_block)
+    print("Virtual host configuration created.")
 
     # Create the root directory for the virtual host
-    echo "Creating root directory for $domain at $root_dir..."
-    mkdir -p "$root_dir"
+    print(f"Creating root directory for {domain} at {root_dir}...")
+    root_dir.mkdir(parents=True, exist_ok=True)
 
     # Create a test index.html page
-    echo "Creating test index.html page at $index_file..."
-    cat > "$index_file" <<EOF
-<html>
+    print(f"Creating test index.html page at {index_file}...")
+    index_content = f"""<html>
 <body>
 <div style="width: 100%; font-size: 40px; font-weight: bold; text-align: center;">
-Nginx Virtual Host Test Page for $domain
+Nginx Virtual Host Test Page for {domain}
 </div>
 </body>
 </html>
-EOF
+"""
+    with open(index_file, 'w') as f:
+        f.write(index_content)
 
     # Set correct permissions and ownership
-    chown -R www:www "$root_dir"
-    chmod -R 755 "$root_dir"
+    print("Setting permissions and ownership...")
+    # Get uid and gid for 'www' user and group
+    try:
+        uid = pwd.getpwnam('www').pw_uid
+        gid = grp.getgrnam('www').gr_gid
+    except KeyError:
+        print("Error: User or group 'www' does not exist.")
+        sys.exit(1)
+
+    for root, dirs, files in os.walk(root_dir):
+        os.chown(root, uid, gid)
+        os.chmod(root, 0o755)
+        for d in dirs:
+            os.chown(os.path.join(root, d), uid, gid)
+            os.chmod(os.path.join(root, d), 0o755)
+        for file in files:
+            os.chown(os.path.join(root, file), uid, gid)
+            os.chmod(os.path.join(root, file), 0o755)
 
     # Test Nginx configuration and reload the service
-    echo "Reloading Nginx to apply the new configuration..."
-    if service nginx configtest; then
-        service nginx reload
-        echo "Nginx reloaded successfully."
-    else
-        echo "Error: Nginx configuration contains errors."
-        exit 1
-    fi
+    print("Reloading Nginx to apply the new configuration...")
+    result = subprocess.run(['service', 'nginx', 'configtest'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if result.returncode == 0:
+        subprocess.run(['service', 'nginx', 'reload'])
+        print("Nginx reloaded successfully.")
+    else:
+        print("Error: Nginx configuration contains errors.")
+        print(result.stdout)
+        print(result.stderr)
+        sys.exit(1)
 
-    echo "Virtual host setup for $domain is complete!"
-}
+    print(f"\nVirtual host setup for {domain} is complete!")
 
-main() {
-    clear
-    echo ""
-    echo "Configuring Nginx virtual host..."
-    echo ""
-    configure_virtual_host
-    echo ""
-    echo "             ,        ,"
-    echo "            /(        )\`"
-    echo "            \ \___   / |"
-    echo "            /- _  \`-/  '"
-    echo "           (/\\/ \ \   /\\"
-    echo "           / /   | \`    \\"
-    echo "           O O   ) /    |"
-    echo "           \`-^--'\`<     '"
-    echo "          (_.)  _  )   /"
-    echo "           \`.___/   /"
-    echo "             \`-----' /"
-    echo "        <----.     __\ "
-    echo "        <----|====O)))==)"
-    echo "        <----'    \`--'"
-    echo "             \`-----'"
-    echo ""
-    echo " Virtual host configuration is complete!   "
-    echo ""
-}
-
-main
+def main():
+    display_clean()
+    check_root()
+    print("Configuring Nginx virtual host...\n")
+    while True:
+        domain = get_domain_name()
+        config_file = Path("/usr/local/etc/nginx/conf.d") / f"{domain}.conf"
+        root_dir = Path("/usr/local/www") / domain
+        if check_existing_configuration(domain, config_file, root_dir):
+            break
+    create_virtual_host(domain)
+            
+    print("")
+    print("             ,        ,")
+    print("            /(        )`")
+    print("            \\ \\___   / |")
+    print("            /- _  `-/  '")
+    print("           (/\\/ \\ \\   /\\")
+    print("           / /   | `    \\")
+    print("           O O   ) /    |")
+    print("           `-^--'`<     '")
+    print("          (_.)  _  )   /")
+    print("           `.___/   /")
+    print("             `-----' /")
+    print("        <----.     __\\ ")
+    print("        <----|====O)))==)")
+    print("        <----'    `--'")
+    print("             `-----'")
+    print("")  
+    print("Your virtual host configuration is complete!")
+    print("")
+if __name__ == "__main__":
+    main()
