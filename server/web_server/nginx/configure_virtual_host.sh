@@ -9,7 +9,7 @@ fi
 configure_virtual_host() {
     while true; do
         # Prompt the user for the domain name
-        read -p "Enter the domain name for the virtual host: " domain
+        read -p "Enter the domain name for the virtual host (example.org): " domain
         if [ -z "$domain" ]; then
             echo "Error: Domain name cannot be empty."
             continue
@@ -105,9 +105,30 @@ EOF
 }
 
 main() {
+    clear
+    echo ""
     echo "Configuring Nginx virtual host..."
+    echo ""
     configure_virtual_host
-    echo "Virtual host configuration is complete!"
+    echo ""
+    echo "             ,        ,"
+    echo "            /(        )\`"
+    echo "            \ \___   / |"
+    echo "            /- _  \`-/  '"
+    echo "           (/\\/ \ \   /\\"
+    echo "           / /   | \`    \\"
+    echo "           O O   ) /    |"
+    echo "           \`-^--'\`<     '"
+    echo "          (_.)  _  )   /"
+    echo "           \`.___/   /"
+    echo "             \`-----' /"
+    echo "        <----.     __\ "
+    echo "        <----|====O)))==)"
+    echo "        <----'    \`--'"
+    echo "             \`-----'"
+    echo ""
+    echo " Virtual host configuration is complete!   "
+    echo ""
 }
 
 main
